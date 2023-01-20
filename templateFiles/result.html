@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--<link rel="stylesheet" href='/staticFiles/main.css' />-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+<div class="container">
+   <div class="table-responsive">
+    <h1 align="center">Gaiter Measurements</h1>
+    <br />
+   <h4>Upper Thigh Circumference</h4>
+   <p id="a"></p>
+   <h4>Knee Circumference</h4>
+   <p id = "b">Knee Circumference </p>
+   <h4>Ankle Circumference</h4>
+   <p id="c"> </p>
+       <h4>Gaiter Length</h4>
+   <p id="d"> c</p>
+  <h4>Proximal end to knee joint</h4>
+   <p id="e"> c</p>
+  <h4>Distal end to knee point</h4>
+   <p id="f"> c</p><br>
+
+        <button>
+        <form enctype="multipart/form-data" action="/compare">
+        <input type="submit" value="Generalized Values">
+    </form></button>
+
+
+<!--    <div>-->
+<!--     <h4>Calculated Values</h4>-->
+<!--     <button type="button" name="load_data" id="load_data" class="btn btn-info">Load Data</button>-->
+<!--    </div>-->
+<!--    <br />-->
+<!--    <div id="value_table">-->
+<!--    </div>-->
+   </div>
+  </div>
+  </body>
+<script>
+   var n = 1;
+   var m = -1;
+   var u =0;
+   var arr = [];
+   var u = parseFloat(localStorage.getItem(1))+parseFloat(localStorage.getItem(-1));
+   var prev1 = localStorage.getItem(1);
+   n = n+1;
+   m = m-1;
+   var prev2 = localStorage.getItem(-1);
+   arr.push(u);
+   for(let i=2;i<4;i++)
+   {
+     if(localStorage.getItem(n)!=prev1 && localStorage.getItem(m)!=prev2)
+     {
+       arr.push(parseFloat(localStorage.getItem(n))+parseFloat(localStorage.getItem(m)));
+       prev1 = localStorage.getItem(n);
+       prev2 = localStorage.getItem(m);
+       n = n+1;
+       m = m-1;
+     }
+     else if( localStorage.getItem(n)==prev1 && localStorage.getItem(m)!=prev2)
+     {
+       prev2 = localStorage.getItem(m);
+       n = n+1;
+       i=i-1;
+     }
+     else if( localStorage.getItem(n)!=prev1 && localStorage.getItem(m)==prev2)
+     {
+       prev1 = localStorage.getItem(n);
+       m = m-1;
+       i=i-1;
+     }
+     else if(localStorage.getItem(n)==prev1 && localStorage.getItem(m)==prev2)
+     {
+        n=n+1;
+        m=m-1;
+        i=i-1;
+     }
+ }
+ for(let i=0;i<1;i++)
+ {
+   if(localStorage.getItem(n)==prev1)
+   {
+    n=n+1;
+    i = i-1;
+   }
+   else
+   {
+   arr.push(localStorage.getItem(n));
+   }
+ }
+ for(let i=0;i<2;i++)
+ {
+   if(localStorage.getItem(m)==prev2)
+   {
+    m = m-1;
+    i = i-1;
+
+   }
+   else
+   {
+   arr.push(localStorage.getItem(m));
+   prev2 = localStorage.getItem(m);
+   }
+ }
+
+
+
+  document.getElementById("a").innerHTML=arr[0]*2*2.54;
+  document.getElementById("b").innerHTML=arr[1]*2*2.54;
+  document.getElementById("c").innerHTML=arr[2]*2*2.54;
+  document.getElementById("d").innerHTML=arr[3]*2.54;
+  document.getElementById("e").innerHTML=arr[4]*2.54;
+  document.getElementById("f").innerHTML=arr[5]*2.54;
+
+</script>
+</html>
+
+
+<script>
+$(document).ready(function(){
+ $('#load_data').click(function(){
+  $.ajax({
+   url:"values.csv",
+   dataType:"text",
+   success:function(data)
+   {
+    var employee_data = data.split(/\r?\n|\r/);
+    var table_data = '<table class="table table-bordered table-striped">';
+    for(var count = 0; count<employee_data.length; count++)
+    {
+     var cell_data = employee_data[count].split(",");
+     table_data += '<tr>';
+     for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+     {
+      if(count === 0)
+      {
+       table_data += '<th>'+cell_data[cell_count]+'</th>';
+      }
+      else
+      {
+       table_data += '<td>'+cell_data[cell_count]+'</td>';
+      }
+     }
+     table_data += '</tr>';
+    }
+    table_data += '</table>';
+    $('#value_table').html(table_data);
+   }
+  });
+ });
+});
+</script>

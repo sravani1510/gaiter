@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+     <style>
+    canvas
+    {
+    background-position: center;
+    background-image: url("../staticFiles/uploads/Gaitorimg1.jpeg");
+    background-size: 100% 100%;
+    }
+    body{
+    margin:0%;
+    }
+        </style>
+  </head>
+
+  <body>
+
+    <canvas id="canvas" height="500">
+        Your browser doesn't support canvas
+
+    </canvas>
+    <p id = "result"></p>
+<!--    <ul id="myList"></ul>-->
+
+    <button>
+        <form enctype="multipart/form-data" action="/second">
+        <input type="submit" value="Continue">
+    </form></button>
+
+
+
+<script>
+    var i1 = 0;
+    localStorage.clear();
+    $(document).ready(function(){
+
+    let list1 = document.getElementById("myList1");
+    let list2 = document.getElementById("myList2");
+    var can = document.getElementById('canvas');
+    var ctx = can.getContext('2d');
+    const d = []
+    var startX, startY;
+
+    $("canvas").mousedown(function(event){
+        startX = event.pageX;
+        startY= event.pageY;
+
+        $(this).bind('click', function(e){
+            drawLine(startX, startY, e.pageX, e.pageY);
+        });
+    }).mouseup(function(){
+        $(this).unbind('mousemove');
+    });
+
+    function drawLine(x, y, stopX, stopY)
+    {
+        var n =0;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(stopX, stopY);
+        ctx.closePath();
+        ctx.stroke();
+        var pixelLength = Math.sqrt(Math.pow((stopX - x),2) + Math.pow((stopY-y),2));
+        var physicalLength = pixelLength / {{value}};
+        console.log("line length = " + physicalLength + " inches (image at " + {{value}} + " dpi)");
+        document.getElementById("result").innerHTML =physicalLength;
+        i1=i1+1;
+        localStorage.setItem(i1, physicalLength);
+
+    }
+
+
+
+});
+
+
+</script>
+
+    </body>
+</html>
